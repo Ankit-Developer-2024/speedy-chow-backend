@@ -1,0 +1,26 @@
+{
+  "name": "speedy_chow_backend",
+  "version": "1.0.0",
+  "description": "Speedy Chow Backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ankit-Developer-2024/speedy-chow-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ankit-Developer-2024/speedy-chow-backend/issues"
+  },
+  "homepage": "https://github.com/Ankit-Developer-2024/speedy-chow-backend#readme",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.3",
+    "nodemon": "^3.1.10"
+  }
+}
