@@ -5,6 +5,7 @@ const db=require('./db')
 const userRouter=require('./routers/user_router')
 const productRouter =  require('./routers/product_router')
 
+app.use(express.json())
 app.use('/user',userRouter.router)
 app.use('/product',productRouter.router)
 
