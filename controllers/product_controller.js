@@ -29,7 +29,6 @@ exports.fetchAllProduct=async(req,res)=>{
       }     
       
       let response = await query.exec();      
-
       res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"data":response})
       
    } catch (error) { 
@@ -42,13 +41,15 @@ exports.fetchAllProduct=async(req,res)=>{
 exports.fetchProductById=async(req,res)=>{
    try {
 
-      const {id}=req.params  
-
-      let response = await Product.findById(id); 
-      res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"data":response})
-      
+      const {id}=req.params
+      if(!id){
+        res.status(400).json({"message":"Product id is missing","success":false,"rs":400,"data":null})  
+      }else{
+       let response = await Product.findById(id); 
+       res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"data":response})
+      }  
    } catch (error) {
-       res.status(400).json({"message":error,"success":false,"rs":400,"data":null})
+       res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
    }
     
 }

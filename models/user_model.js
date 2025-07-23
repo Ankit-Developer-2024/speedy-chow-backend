@@ -1,4 +1,5 @@
 const mongoose=require('mongoose')
+const bcrypt = require('bcryptjs')
 
 const userSchema=new mongoose.Schema({
     name:{type:String,require:true},
@@ -14,6 +15,12 @@ const userSchema=new mongoose.Schema({
     role:{type:String ,required : true,default:'user'},
 
 },{timestamps:true})
+
+userSchema.pre('save', async function() {
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash( this.password, salt)
+    this.password=hash
+});
 
 userSchema.virtual('id').get(function () {
     return this._id;
