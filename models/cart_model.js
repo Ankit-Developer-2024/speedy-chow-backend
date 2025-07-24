@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 
 const cartSchema = new mongoose.Schema({
-    quantity:{type:Number,min:[0,"Enter wrong min quantity"],require:true},
-    product:{type:mongoose.Schema.ObjectId,ref:'Product',require:true},
-    user:{type:mongoose.Schema.ObjectId,ref:'User',require:true},
+    quantity:{type:Number,min:[1,"Enter wrong min quantity"],require:true},
+    product:{type:mongoose.Schema.Types.ObjectId,ref:'Product',require:true},
+    user:{type:mongoose.Schema.Types.ObjectId,ref:'User',require:true},
 })
 
 cartSchema.virtual('id').get(function () {

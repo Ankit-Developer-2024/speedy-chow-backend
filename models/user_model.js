@@ -11,7 +11,7 @@ const userSchema=new mongoose.Schema({
     image:{type:Buffer},
     addresses:{type:[mongoose.Schema.Types.Mixed]},
     salt:Buffer,
-    resetPasswordToekn:{type:String,default:""},
+    resetPasswordOtp:{type:String,default:""},
     role:{type:String ,required : true,default:'user'},
 
 },{timestamps:true})

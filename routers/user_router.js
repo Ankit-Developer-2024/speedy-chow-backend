@@ -1,8 +1,7 @@
 const express = require('express')
-const app = express()
 const router = express.Router()
-const {signUp}  =require("../controllers/user_controller")
+const {updateUser} = require('../controllers/user_controller')
 
 exports.router=
-router.post('/',signUp) 
+        router.patch('/:id',updateUser) 
           

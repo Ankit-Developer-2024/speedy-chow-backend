@@ -1,7 +1,8 @@
 const mongoose =  require('mongoose')
 
 const paymentMethods={
-    values:['cod','card'],
+    type:String,
+    values:['COD','CARD'],
     message:"Payment method must be cod OR card"
 }
 

@@ -1,31 +1,45 @@
-const { User } = require("../models/user_model");
+const { User } = require("../models/user_model")
 
-
-exports.signUp= async(req,res)=>{
-    
+exports.fetchUserById=async(req,res)=>{
     try {
-      const {name,email,password}=req.body;
-      
-      if(name.trim().length==0){
-          res.status(400).json({"message":"Name is missing","success":false,"rs":400,"data":null})
+        let {id}=req.params
+
+        let user=await User.findById(id);
+        if (user) {
+             let userData={
+                name:user.name,
+                email:user.email,
+                dob:user.dob,
+                gender:user.gender,
+                phone:user.phone,
+                role:user.role
+              } 
+         res.status(200).json({"message":"User fetch successfully","success":true,"rs":200,"data":userData})
+        } else{
+         res.status(400).json({"message":"User not found","success":true,"rs":400,"data":null})
+        }       
+    } catch (error) {
+        res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
       }
-      else if(!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)){      
-         res.status(400).json({"message":"Enter a vaild Email","success":false,"rs":400,"data":null})
-      }
-      else if(!password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm)) {
-            res.status(400).json({"message":"Enter a vaild Passsword","success":false,"rs":400,"data":null})
-      }else{
-       const user = new User({name,email,password});
-       const response = await user.save();
-       res.status(400).json({"message":"User successfully created","success":true,"rs":201,"data":response})
-      
-      }
-    } catch (error) { 
-      res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
-    }
-    
-   
 }
 
- 
+exports.updateUser=async(req,res)=>{
+     try {
+        let {id}=req.params
 
+         let user=await User.findByIdAndUpdate(id,req.body,{new:true});
+         let userData={
+                name:user.name,
+                email:user.email,
+                dob:user.dob,
+                gender:user.gender,
+                phone:user.phone,
+                role:user.role
+              } 
+         res.status(200).json({"message":"User updated successfully","success":true,"rs":200,"data":userData})
+     } catch (error) {
+           res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
+     }
+
+
+}
