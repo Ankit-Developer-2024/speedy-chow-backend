@@ -1,8 +1,8 @@
 const { User } = require("../models/user_model")
 
-exports.fetchUserById=async(req,res)=>{
+exports.fetchUser=async(req,res)=>{
     try {
-        let {id}=req.params
+        let {id}=req.user
 
         let user=await User.findById(id);
         if (user) {
@@ -12,6 +12,8 @@ exports.fetchUserById=async(req,res)=>{
                 dob:user.dob,
                 gender:user.gender,
                 phone:user.phone,
+                addresses:user.addresses,
+                image:user.image,
                 role:user.role
               } 
          res.status(200).json({"message":"User fetch successfully","success":true,"rs":200,"data":userData})

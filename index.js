@@ -1,7 +1,6 @@
-const express = require("express")
-const app=express()
-const router=express.Router();
-const db=require('./db')
+const express = require("express") 
+const app=express() 
+const db=require('./config.js/db')
 const userRouter=require('./routers/user_router')
 const authRouter=require('./routers/auth_router')
 const productRouter =  require('./routers/product_router')
@@ -19,6 +18,6 @@ app.use('/order',orderRouter.router)
 
  
 
-app.listen(3000,(req,res)=>{
-    console.log("App run 3000")
+app.listen(process.env.PORT,(req,res)=>{
+    console.log("App run on",process.env.PORT)
 }) 

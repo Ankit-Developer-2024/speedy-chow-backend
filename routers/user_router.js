@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const {updateUser} = require('../controllers/user_controller')
+const {updateUser, fetchUser} = require('../controllers/user_controller')
+const authJwt = require('../middlewares/auth_jwt')
 
 exports.router=
-        router.patch('/:id',updateUser) 
+        router.get('/',authJwt,fetchUser) 
+        router.patch('/:id',authJwt,updateUser) 
           

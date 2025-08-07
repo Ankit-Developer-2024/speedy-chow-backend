@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     discountPercentage:{type:Number,min:[0,"Enter wrong discount percentage 0-100"],max:[100,"Enter wrong discount percentage 0-100"],default:0},
     discountedPrice:{type:Number,min:[0,"Enter wrong discounted price"],require:true},
     totalQuantity:{type:Number,min:[0,"Enter wrong min totalQuantity"],require:true},
-    rating:{type:Number,min:[0,"Enter wrong min rating"],max:[5 ,"Enter wrong max rating"],default:0},
+    rating:{type:Number,min:[0.0,"Enter wrong min rating"],max:[5.0 ,"Enter wrong max rating"],default:0.0},
     category:{type:String,require:true},
     deleted:{type:Boolean ,default : false},
 });

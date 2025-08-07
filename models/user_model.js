@@ -1,5 +1,14 @@
 const mongoose=require('mongoose')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs'); 
+
+const addressSchema = new mongoose.Schema({
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  zipCode: { type: String, required: true },
+  country: { type: String, required: true },
+  isDefault: { type: Boolean, default: false } // Indicates if this is the default address
+});
 
 const userSchema=new mongoose.Schema({
     name:{type:String,require:true},
@@ -9,7 +18,7 @@ const userSchema=new mongoose.Schema({
     phone:{type:Number}, 
     dob:{type:Date},
     image:{type:Buffer},
-    addresses:{type:[mongoose.Schema.Types.Mixed]},
+    addresses:[addressSchema],
     salt:Buffer,
     resetPasswordOtp:{type:String,default:""},
     role:{type:String ,required : true,default:'user'},

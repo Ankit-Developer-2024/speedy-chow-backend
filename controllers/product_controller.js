@@ -1,4 +1,5 @@
-const {Product} = require('../models/product_model')
+const {Product} = require('../models/product_model');
+const createJwtToken = require('../services/global_services');
 
 exports.createProduct=async(req,res)=>{
    try {
@@ -10,7 +11,7 @@ exports.createProduct=async(req,res)=>{
       res.status(201).json({"message":"Product successfully created","success":true,"rs":201,"data":response})
       
    } catch (error) {
-       res.status(400).json({"message":error,"success":false,"rs":400,"data":null})
+       res.status(400).json({"message":String(error),"success":false,"rs":400,"data":null})
    }
     
 }
@@ -24,15 +25,17 @@ exports.fetchAllProduct=async(req,res)=>{
        }
        
       let query=Product.find(condition);
-      if(req.query.category){
-        query=query.find({category:{$in:req.query.category.split(',') } })
+      if(req.query.category){ 
+         
+        query=query.find({category:{$in:req.query.category} })
       }     
       
+     const {accessToken,refreshToken} =createJwtToken(req.user);     
       let response = await query.exec();      
-      res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"data":response})
+      res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"accessToken":accessToken,"refreshToken":refreshToken,"data":response})
       
    } catch (error) { 
-       res.status(400).json({"message":error,"success":false,"rs":400,"data":null})
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
     
 }
@@ -46,10 +49,11 @@ exports.fetchProductById=async(req,res)=>{
         res.status(400).json({"message":"Product id is missing","success":false,"rs":400,"data":null})  
       }else{
        let response = await Product.findById(id); 
-       res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"data":response})
+       const {accessToken,refreshToken} =createJwtToken(req.user);  
+       res.status(200).json({"message":"Product fetch successfully","success":true,accessToken,refreshToken,"rs":200,"data":response})
       }  
    } catch (error) {
-       res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
     
 }
@@ -65,6 +69,6 @@ exports.updateProduct=async(req,res)=>{
         res.status(201).json({"message":"Product successfully updated","success":true,"rs":201,"data":updatedProduct})
       
     } catch (error) {
-           res.status(400).json({"message":error,"success":false,"rs":400,"data":null})
+           res.status(400).json({"message":String(error),"success":false,"rs":400,"data":null})
     }
 }

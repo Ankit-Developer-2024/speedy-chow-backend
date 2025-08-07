@@ -8,7 +8,7 @@ exports.createCategory=async(req,res)=>{
       res.status(201).json({"message":"Category successfully created","success":true,"rs":201,"data":response})
       
    } catch (error) {
-       res.status(400).json({"message":error,"success":false,"rs":400,"data":null})
+       res.status(400).json({"message":String(error),"success":false,"rs":400,"data":null})
    }
     
 }
@@ -20,7 +20,9 @@ exports.fetchAllCategory=async(req,res)=>{
       res.status(200).json({"message":"Category fetch successfully","success":true,"rs":200,"data":response})
       
    } catch (error) { 
-       res.status(400).json({"message":error,"success":false,"rs":400,"data":null})
+       console.log("fetchAllCategory--",error);
+       
+       res.status(400).json({"message":String(error),"success":false,"rs":400,"data":null})
    }
     
 }
