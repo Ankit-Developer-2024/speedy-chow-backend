@@ -4,7 +4,7 @@ require('../models/product_model');
 
 exports.fetchCartByUser=async(req,res)=>{
    const {id}=req.user
-    try{
+    try{ 
         const {accessToken,refreshToken} =createJwtToken(req.user);  
         const response=await Cart.find({user:id}).populate('user').populate('product')
         res.status(200).json({"message":"Cart item fetch sucessfully","success":true,"rs":200,accessToken,refreshToken,"data":response})
