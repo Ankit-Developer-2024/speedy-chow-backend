@@ -5,5 +5,5 @@ const authJwt = require('../middlewares/auth_jwt')
 
 exports.router=
         router.get('/',authJwt,fetchUser) 
-        router.patch('/:id',authJwt,updateUser) 
+        router.patch('/',authJwt,updateUser) 
           

@@ -21,15 +21,14 @@ exports.fetchUser=async(req,res)=>{
          res.status(400).json({"message":"User not found","success":true,"rs":400,"data":null})
         }       
     } catch (error) {
-        res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
+        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
       }
 }
 
 exports.updateUser=async(req,res)=>{
      try {
-        let {id}=req.params
-
-         let user=await User.findByIdAndUpdate(id,req.body,{new:true});
+        let {id}=req.user 
+         let user=await User.findByIdAndUpdate(id,{...req.body},{new:true});
          let userData={
                 name:user.name,
                 email:user.email,
@@ -37,10 +36,10 @@ exports.updateUser=async(req,res)=>{
                 gender:user.gender,
                 phone:user.phone,
                 role:user.role
-              } 
+              }
          res.status(200).json({"message":"User updated successfully","success":true,"rs":200,"data":userData})
      } catch (error) {
-           res.status(500).json({"message":error,"success":false,"rs":500,"data":null})
+           res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
      }
 
 
