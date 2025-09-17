@@ -1,10 +1,12 @@
 const { User } = require("../models/user_model");
+const createJwtToken = require("../services/global_services");
 
 exports.fetchUser = async (req, res) => {
   try {
     let { id } = req.user;
 
     let user = await User.findById(id);
+     const {accessToken,refreshToken} =createJwtToken(req.user); 
     if (user) {
       let userData = {
         name: user.name,
@@ -22,8 +24,11 @@ exports.fetchUser = async (req, res) => {
           message: "User fetch successfully",
           success: true,
           rs: 200,
+          accessToken,
+          refreshToken,
           data: userData,
         });
+
     } else {
       res
         .status(400)
@@ -31,6 +36,8 @@ exports.fetchUser = async (req, res) => {
           message: "User not found",
           success: true,
           rs: 400,
+          accessToken,
+          refreshToken,
           data: null,
         });
     }
@@ -40,6 +47,43 @@ exports.fetchUser = async (req, res) => {
       .json({ message: String(error), success: false, rs: 500, data: null });
   }
 };
+
+exports.fetchAllUser = async(req,res) =>{
+  try {
+
+     let users = await User.find();
+     const {accessToken,refreshToken} =createJwtToken(req.user); 
+
+    if (users) {
+      let userData = users.map((user)=>{
+          return {
+        id:user.id,    
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        role: user.role,
+        joinedAt:user.createdAt,
+        status:user.status,
+      };
+      });
+      res
+        .status(200)
+        .json({
+          message: "User fetch successfully",
+          success: true,
+          rs: 200,
+          accessToken,
+          refreshToken,
+          data: userData,
+        });
+    
+  }
+ } catch (error) {
+        res
+      .status(500)
+      .json({ message: String(error), success: false, rs: 500, data: null });
+  }
+}
 
 exports.updateUser = async (req, res) => {
   try {
@@ -62,10 +106,13 @@ exports.updateUser = async (req, res) => {
         phone: user.phone,
         role: user.role,
       };
+      const {accessToken,refreshToken} =createJwtToken(req.user);  
       res.status(200) .json({
           message: "User updated successfully",
           success: true,
           rs: 200,
+          accessToken,
+          refreshToken,
           data: userData,
         });
     } else {
@@ -79,12 +126,15 @@ exports.updateUser = async (req, res) => {
         phone: user.phone,
         role: user.role,
       };
+      const {accessToken,refreshToken} =createJwtToken(req.user);  
       res
         .status(200)
         .json({
           message: "User updated successfully",
           success: true,
           rs: 200,
+          accessToken,
+          refreshToken,
           data: userData,
         });
     }
@@ -97,7 +147,8 @@ exports.updateUser = async (req, res) => {
 
 exports.updateUserAddress = async (req, res) => {
   try {
-    let { id } = req.user; 
+    let { id } = req.user;  
+    
     let user = await User.findById(id);
      user.addresses.forEach((item,i)=>{
       if(item.id===req.params.id){ 
@@ -128,17 +179,19 @@ exports.updateUserAddress = async (req, res) => {
       phone: user.phone,
       role: user.role,
     };
+    const {accessToken,refreshToken} =createJwtToken(req.user);  
     res
       .status(200)
       .json({
-        message: "User updated -successfully",
+        message: "User updated successfully",
         success: true,
         rs: 200,
+        accessToken,
+        refreshToken,
         data: userData,
       });
-  } catch (error) {
-    console.log(error);
-    
+  } catch (error) { 
+  
     res
       .status(500)
       .json({ message: String(error), success: false, rs: 500, data: null });

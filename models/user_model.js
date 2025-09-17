@@ -38,6 +38,7 @@ const userSchema=new mongoose.Schema({
     salt:Buffer,
     resetPasswordOtp:{type:String,default:""},
     role:{type:String ,required : true,default:'user'},
+    status:{type:String ,required : true,default:'Active'}
 
 },{timestamps:true})
 
@@ -102,3 +103,4 @@ userSchema.set('toJSON',{
 const User=mongoose.model('User',userSchema)
 
 exports.User=User
+exports.addressSchema=addressSchema

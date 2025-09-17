@@ -1,16 +1,24 @@
 const {Product} = require('../models/product_model');
 const createJwtToken = require('../services/global_services');
+const { login } = require('./auth_controller');
 
 exports.createProduct=async(req,res)=>{
-   try {
-      
-      let product=new Product(req.body);
-          product.discountedPrice=Math.round(product.price *(1-product.discountPercentage/100))
+   try { 
+     
+      if(!req.file){
+       res.status(400).json({"message":"Image not found!","success":false,"rs":400,"data":null})
+       return;
+      }
 
-      let response = await product.save()
+      let productDetails=JSON.parse(req.body.productDetails);
+      productDetails.image=req.file.buffer 
+      let product=new Product(productDetails);
+      product.discountedPrice=Math.round(product.price *(1-product.discountPercentage/100))
+      let response = await product.save() 
+      
       res.status(201).json({"message":"Product successfully created","success":true,"rs":201,"data":response})
       
-   } catch (error) {
+   } catch (error) { 
        res.status(400).json({"message":String(error),"success":false,"rs":400,"data":null})
    }
     
