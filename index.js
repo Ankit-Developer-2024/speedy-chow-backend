@@ -13,10 +13,8 @@ const corsOptions = {
   origin: 'http://localhost:5173', // Allow only your frontend's origin
 };
 
-app.use(cors(corsOptions));
-app.use('/uploads', express.static('uploads'));
+app.use(cors(corsOptions)); 
  
-
 app.use(express.json()) 
 app.use('/auth',authRouter.router)
 app.use('/user',userRouter.router)

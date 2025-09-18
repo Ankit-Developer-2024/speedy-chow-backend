@@ -4,7 +4,7 @@ const { login } = require('./auth_controller');
 
 exports.createProduct=async(req,res)=>{
    try { 
-     
+
       if(!req.file){
        res.status(400).json({"message":"Image not found!","success":false,"rs":400,"data":null})
        return;
@@ -12,8 +12,10 @@ exports.createProduct=async(req,res)=>{
 
       let productDetails=JSON.parse(req.body.productDetails);
       productDetails.image=req.file.buffer 
+      productDetails.imageType=req.file.mimetype   
+      productDetails.discountedPrice=Math.round(productDetails.price *(1-productDetails.discountPercentage/100))
+     
       let product=new Product(productDetails);
-      product.discountedPrice=Math.round(product.price *(1-product.discountPercentage/100))
       let response = await product.save() 
       
       res.status(201).json({"message":"Product successfully created","success":true,"rs":201,"data":response})
@@ -34,7 +36,6 @@ exports.fetchAllProduct=async(req,res)=>{
        
       let query=Product.find(condition);
       if(req.query.category){ 
-         
         query=query.find({category:{$in:req.query.category} })
       }     
       
@@ -71,12 +72,37 @@ exports.updateProduct=async(req,res)=>{
       
        let {id}=req.params
 
-        const product = await Product.findByIdAndUpdate(id,req.body,{new:true});
-        product.discountedPrice=Math.round(product.price*(1-product.discountPercentage/100))
-        const updatedProduct = await product.save();
-        res.status(201).json({"message":"Product successfully updated","success":true,"rs":201,"data":updatedProduct})
+       if(!req.file){
+       res.status(400).json({"message":"Image not found!","success":false,"rs":400,"data":null})
+       return;
+      }
+
+      let productDetails=JSON.parse(req.body.productDetails);
+      productDetails.image=req.file.buffer 
+      productDetails.imageType=req.file.mimetype   
+      productDetails.discountedPrice=Math.round(productDetails.price *(1-productDetails.discountPercentage/100))
+     
+      const updatedProduct = await Product.findByIdAndUpdate(id,productDetails,{new:true});
+       
+      res.status(200).json({"message":"Product successfully updated","success":true,"rs":200,"data":updatedProduct})
       
-    } catch (error) {
-           res.status(400).json({"message":String(error),"success":false,"rs":400,"data":null})
+    } catch (error) { 
+      res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
     }
+}
+
+exports.deleteProductById=async(req,res)=>{
+   try {
+
+      const {id}=req.params
+      if(!id){
+        res.status(400).json({"message":"Product id is missing","success":false,"rs":400,"data":null})  
+      }else{
+       let response = await Product.findByIdAndDelete(id);
+       res.status(200).json({"message":"Product deleted successfully","success":true,"rs":200,"data":response})
+      }  
+   } catch (error) {
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+   }
+    
 }

@@ -50,8 +50,9 @@ userSchema.pre('save', async function(next) {
 });
 
 userSchema.pre('findOneAndUpdate',async function () { 
-    let addr=this.getUpdate() ||{}   
-    if(addr.$set.addresses[addr.$set.addresses.length-1].isDefault===true){ 
+    let addr=this.getUpdate() ||{}    
+    if(addr.$set.addresses){
+        if(addr.$set.addresses[addr.$set.addresses.length-1].isDefault===true){ 
         addr.$set.addresses.forEach((address, index) => {
                 if (addr.$set.addresses[addr.$set.addresses.length-1] !== address) {
                     address.isDefault = false;
@@ -80,6 +81,7 @@ userSchema.pre('findOneAndUpdate',async function () {
             });
     }else if(defaultAddressCount==0 && addr.$set.addresses.length>0){ 
         addr.$set.addresses[0].isDefault=true;
+    }
     }
     
 })

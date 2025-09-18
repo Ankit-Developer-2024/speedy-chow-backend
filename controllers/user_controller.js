@@ -145,6 +145,38 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.updateUserRoleAndStatus=async(req,res)=>{
+  try {
+    let {id}= req.params   
+  
+    let user= await User.findByIdAndUpdate(id,req.body,{new:true})
+     let userData = {
+        id:user.id,    
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        role: user.role,
+        joinedAt:user.createdAt,
+        status:user.status,
+      };
+       res
+        .status(200)
+        .json({
+          message: "User updated successfully",
+          success: true,
+          rs: 200, 
+          data: userData,
+        });
+
+  } catch (error) {
+    console.log(error);
+    
+     res
+      .status(500)
+      .json({ message: String(error), success: false, rs: 500, data: null });
+  }
+}
+
 exports.updateUserAddress = async (req, res) => {
   try {
     let { id } = req.user;  
@@ -197,3 +229,16 @@ exports.updateUserAddress = async (req, res) => {
       .json({ message: String(error), success: false, rs: 500, data: null });
   }
 };
+
+
+exports.deleteUserById=async(req,res)=>{
+   try {
+     let { id } = req.params;  
+       let response = await User.findByIdAndDelete(id);
+       res.status(200).json({"message":"User deleted successfully","success":true,"rs":200,"data":response})
+       
+   } catch (error) {
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+   }
+    
+}
