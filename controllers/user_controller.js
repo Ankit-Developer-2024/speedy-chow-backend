@@ -51,8 +51,7 @@ exports.fetchUser = async (req, res) => {
 exports.fetchAllUser = async(req,res) =>{
   try {
 
-     let users = await User.find();
-     const {accessToken,refreshToken} =createJwtToken(req.user); 
+     let users = await User.find(); 
 
     if (users) {
       let userData = users.map((user)=>{
@@ -71,9 +70,7 @@ exports.fetchAllUser = async(req,res) =>{
         .json({
           message: "User fetch successfully",
           success: true,
-          rs: 200,
-          accessToken,
-          refreshToken,
+          rs: 200, 
           data: userData,
         });
     
@@ -147,8 +144,8 @@ exports.updateUser = async (req, res) => {
 
 exports.updateUserRoleAndStatus=async(req,res)=>{
   try {
-    let {id}= req.params   
-  
+    let {id}= req.params    
+    
     let user= await User.findByIdAndUpdate(id,req.body,{new:true})
      let userData = {
         id:user.id,    
@@ -168,9 +165,7 @@ exports.updateUserRoleAndStatus=async(req,res)=>{
           data: userData,
         });
 
-  } catch (error) {
-    console.log(error);
-    
+  } catch (error) { 
      res
       .status(500)
       .json({ message: String(error), success: false, rs: 500, data: null });
@@ -238,6 +233,27 @@ exports.deleteUserById=async(req,res)=>{
        res.status(200).json({"message":"User deleted successfully","success":true,"rs":200,"data":response})
        
    } catch (error) {
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+   }
+    
+}
+
+exports.deleteMultipleUserById=async(req,res)=>{
+   try { 
+     let { userIds } = req.body;   
+      if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+          return res.status(400).json({ message: 'No user IDs provided for deletion.',"success":false,"rs":400,"data":null });
+         }
+       const users = await User.find({_id:{$in:[...userIds]}});  
+       let response = await User.deleteMany({_id:{$in:[...userIds]}}); 
+       if (response.deletedCount === 0) {
+         return res.status(404).json({ message: 'No users found with the provided IDs.',"success":false,"rs":404,"data":null });
+        } 
+    
+        let  deletedUsers={users}
+       res.status(200).json({"message":`${response.deletedCount} users deleted successfully`,"success":true,"rs":200,"data":deletedUsers})
+       
+   } catch (error) { 
        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
     

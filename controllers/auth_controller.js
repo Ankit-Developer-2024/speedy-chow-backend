@@ -116,9 +116,7 @@ exports.verifyToken=async (req,res)=>{
       try {
            const {accessToken,refreshToken} =createJwtToken(req.user)
            res.status(200).json({'message':"Authorizated:Token generated successfully",success:true,"rs":200,accessToken,refreshToken,"data":{isVerify:true}})
-      } catch (error) {
-        console.log('verfiy=====',error);
-        
+      } catch (error) { 
            res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
       }
 }

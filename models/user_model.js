@@ -85,9 +85,6 @@ userSchema.pre('findOneAndUpdate',async function () {
     }
     
 })
-
-
- 
  
 
 userSchema.virtual('id').get(function () {

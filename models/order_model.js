@@ -18,15 +18,19 @@ const orderSchema = new mongoose.Schema({
     selectedAddress:{type:addressSchema,require:true},
 },{timestamps:true})
 
-const virtual=orderSchema.virtual("id");
-virtual.get(function () {
+
+orderSchema.virtual('id').get(function () {
     return this._id;
 })
 
 orderSchema.set('toJSON',{
-    virtuals: true,
+    virtuals:true,
     versionKey:false,
-    transform:function(doc,ret){delete ret._id}      //these virtuals help to convert _id field to id 
+    transform(doc,ret){
+        delete ret._id
+    }
 })
 
-exports.Order=mongoose.model("Order",orderSchema)
+const Order=mongoose.model("Order",orderSchema)
+
+exports.Order=Order

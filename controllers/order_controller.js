@@ -70,3 +70,71 @@ exports.fetchOrderById=async(req,res)=>{
    }
     
 }
+
+
+exports.fetchAllOrder=async(req,res)=>{
+   try {
+      let orders=await Order.find();    
+      res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"data":orders})
+      
+   } catch (error) { 
+      console.log(error);
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+   }
+    
+}
+
+
+exports.updateOrder=async(req,res)=>{
+  try {
+    let {id}= req.params    
+    
+    let order= await Order.findByIdAndUpdate(id,req.body,{new:true})
+       res
+        .status(200)
+        .json({
+          message: "Order updated successfully",
+          success: true,
+          rs: 200, 
+          data: order,
+        });
+
+  } catch (error) { 
+     res
+      .status(500)
+      .json({ message: String(error), success: false, rs: 500, data: null });
+  }
+}
+
+
+exports.deleteOrderById=async(req,res)=>{
+   try {
+     let { id } = req.params;  
+       let response = await Order.findByIdAndDelete(id);
+       res.status(200).json({"message":"Order deleted successfully","success":true,"rs":200,"data":response})
+       
+   } catch (error) {
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+   }
+}
+
+exports.deleteMultipleOrderByIds=async(req,res)=>{
+   try { 
+     let { orderIds } = req.body;   
+      if (!orderIds || !Array.isArray(orderIds) || orderIds.length === 0) {
+          return res.status(400).json({ message: 'No order IDs provided for deletion.',"success":false,"rs":400,"data":null });
+         }
+       const orders = await Order.find({_id:{$in:[...orderIds]}});  
+       let response = await Order.deleteMany({_id:{$in:[...orderIds]}}); 
+       if (response.deletedCount === 0) {
+         return res.status(404).json({ message: 'No orders found with the provided IDs.',"success":false,"rs":404,"data":null });
+        } 
+    
+        let  deletedOrders={orders}
+       res.status(200).json({"message":`${response.deletedCount} orders deleted successfully`,"success":true,"rs":200,"data":deletedOrders})
+       
+   } catch (error) { 
+       res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+   }
+    
+}

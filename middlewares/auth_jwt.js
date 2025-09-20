@@ -14,12 +14,12 @@ function authJwt(req,res,next) {
             if (err) {
                 res.status(401).json({ "message": "Unauthorized:Invalid token", "success": false, "rs": 401, "data": null });
                 return;
-            }
+            } 
             req.user = user;
             next();
         });
     
-    } catch (error) { 
+    } catch (error) {  
         res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
     
     } 
