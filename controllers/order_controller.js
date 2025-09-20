@@ -74,7 +74,7 @@ exports.fetchOrderById=async(req,res)=>{
 
 exports.fetchAllOrder=async(req,res)=>{
    try {
-      let orders=await Order.find();    
+      let orders=await Order.find().sort({ createdAt: -1}).exec();    
       res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"data":orders})
       
    } catch (error) { 

@@ -51,7 +51,7 @@ exports.fetchUser = async (req, res) => {
 exports.fetchAllUser = async(req,res) =>{
   try {
 
-     let users = await User.find(); 
+     let users = await User.find().sort({ createdAt: -1}).exec(); 
 
     if (users) {
       let userData = users.map((user)=>{

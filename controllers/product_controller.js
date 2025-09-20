@@ -32,12 +32,21 @@ exports.fetchAllProduct=async(req,res)=>{
        let condition={};
        if(!req.query.admin){
           condition.deleted={$ne:true}
-       }
+       } 
        
       let query=Product.find(condition);
-      if(req.query.category){ 
-        query=query.find({category:{$in:req.query.category} })
-      }     
+      if(req.query.category || req.query["category[]"]){ 
+         if(req.query["category[]"]){ 
+            query=query.find({category:{$in:req.query["category[]"]} })
+         }else{
+            let category=req.query.category.split(','); 
+            query=query.find({category:{$in:category} })
+         }
+        
+      }
+      if(req.query.qName){
+         query=query.find({name:{$in:req.query.qName} })
+      }
       
      const {accessToken,refreshToken} =createJwtToken(req.user);     
       let response = await query.exec();      
@@ -106,3 +115,39 @@ exports.deleteProductById=async(req,res)=>{
    }
     
 }
+
+
+exports.searchProductByName=async (req, res) => {
+  try {
+    const { qName } = req.query; 
+    
+    if (!qName) return  res.status(400).json({"message":"No search query find!","success":false,"rs":400,"data":null})
+
+
+    const products = await Product.aggregate([
+      {
+        $search: {
+          index: "fuzzySearch", 
+          autocomplete: {
+            query: qName,
+            path: "name",   // field to search
+            fuzzy: { maxEdits: 1 } // allows small typos (optional)
+          }
+        }
+      },
+      { $limit: 10 }, // return only 10 results
+      {
+         $project: {
+      _id: 1,
+      name: 1,
+      discountedPrice:1 
+    }}
+    ]);
+
+     res.status(200).json({"message":"Product Searched","success":true,"rs":200,"data":products})
+  } catch (error) {
+   console.error(error);
+   res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+
+  }
+};
