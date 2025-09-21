@@ -74,7 +74,24 @@ exports.fetchOrderById=async(req,res)=>{
 
 exports.fetchAllOrder=async(req,res)=>{
    try {
-      let orders=await Order.find().sort({ createdAt: -1}).exec();    
+      let {id , paymentMethod,status}=req.query
+      
+      if(id){
+        let orders =await Order.find({_id:id})
+        return res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"data":orders})
+      }
+
+      let condition={}
+      if(paymentMethod){
+         condition.paymentMethod={$in:paymentMethod}
+      }
+      if(status){
+         condition.status={$in:status}
+      }
+
+       let orders=await Order.find(condition).sort({ createdAt: -1}).exec(); 
+      
+         
       res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"data":orders})
       
    } catch (error) { 

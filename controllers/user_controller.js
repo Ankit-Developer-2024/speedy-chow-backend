@@ -50,9 +50,19 @@ exports.fetchUser = async (req, res) => {
 
 exports.fetchAllUser = async(req,res) =>{
   try {
-
-     let users = await User.find().sort({ createdAt: -1}).exec(); 
-
+    
+    let condition={};
+    if(req.query.qName){
+      condition.name={$in:req.query.qName}
+    }
+    if(req.query.role){
+      condition.role={$in:req.query.role}
+    } 
+    if(req.query.status){
+       condition.status={$in:req.query.status}
+    } 
+    let users = await User.find(condition).sort({ createdAt: -1}).exec(); 
+     
     if (users) {
       let userData = users.map((user)=>{
           return {
@@ -75,7 +85,7 @@ exports.fetchAllUser = async(req,res) =>{
         });
     
   }
- } catch (error) {
+ } catch (error) { 
         res
       .status(500)
       .json({ message: String(error), success: false, rs: 500, data: null });
@@ -258,3 +268,39 @@ exports.deleteMultipleUserById=async(req,res)=>{
    }
     
 }
+
+
+
+exports.searchUserByName=async (req, res) => {
+  try {
+    const { qName } = req.query; 
+    
+    if (!qName) return  res.status(400).json({"message":"No search query find!","success":false,"rs":400,"data":null})
+
+
+    const users = await User.aggregate([
+      {
+        $search: {
+          index: "fuzzySearchUser", 
+          autocomplete: {
+            query: qName,
+            path: "name",   // field to search
+            fuzzy: { maxEdits: 1 } // allows small typos (optional)
+          }
+        }
+      },
+      { $limit: 10 }, // return only 10 results
+      {
+         $project: {
+      _id: 1,
+      name: 1, 
+    }}
+    ]);
+
+     res.status(200).json({"message":"Users Searched","success":true,"rs":200,"data":users})
+  } catch (error) {
+   console.error(error);
+   res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
+
+  }
+};
