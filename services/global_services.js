@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const sanitizeUser = require('./common');
+const { sanitizeUser } = require('./common');
+require('dotenv').config(); 
 
 function createJwtToken(user) { 
       
@@ -8,7 +8,7 @@ function createJwtToken(user) {
     
     const accessToken=jwt.sign({id,email,role},
             process.env.JWT_PRIVATE_KEY,
-          {expiresIn: '1m'},
+          {expiresIn: '1h'},
           )
  
     const refreshToken=jwt.sign({id,email,role},

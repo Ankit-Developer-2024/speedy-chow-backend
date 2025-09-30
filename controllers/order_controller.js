@@ -4,10 +4,11 @@ const { Product } = require("../models/product_model");
 const createJwtToken = require("../services/global_services");
 
 exports.createOrder=async(req,res)=>{
-    try {
+    try { 
       //  let {user,totalAmount,totalItems,items,selectedAddress,paymentMethod}=req.body
         const order=new Order({...req.body,"user":req.user.id})
-        //here we need to check and manage the product quantity
+        //here we need to check and manage the product quantity 
+        
         let outOfStock=""
         for(let item of order.items){ 
            let product = await Product.findById(item.product.id);
@@ -40,6 +41,7 @@ exports.createOrder=async(req,res)=>{
         res.status(201).json({"message":"Order created sucessfully!","success":true,"rs":201,accessToken,refreshToken,"data":{"isOrderCreated":true}})
 
     } catch (error) { 
+
         res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
     }
 }
@@ -50,7 +52,7 @@ exports.fetchAllUserOrder=async(req,res)=>{
       
       let orders=await Order.find({'user':req.user.id});
       const {accessToken,refreshToken} =createJwtToken(req.user);    
-      res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"accessToken":accessToken,"refreshToken":refreshToken,"data":orders})
+      res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"accessToken":accessToken,"refreshToken":refreshToken,"data":orders})
       
    } catch (error) { 
        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
@@ -78,7 +80,7 @@ exports.fetchAllOrder=async(req,res)=>{
       
       if(id){
         let orders =await Order.find({_id:id})
-        return res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"data":orders})
+        return res.status(200).json({"message":"Orders fetch successfully","success":true,"rs":200,"data":orders})
       }
 
       let condition={}

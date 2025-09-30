@@ -49,10 +49,11 @@ exports.fetchAllProduct=async(req,res)=>{
       }
       
      const {accessToken,refreshToken} =createJwtToken(req.user);     
-      let response = await query.exec();      
+      let response = await query.exec();   
+      
       res.status(200).json({"message":"Product fetch successfully","success":true,"rs":200,"accessToken":accessToken,"refreshToken":refreshToken,"data":response})
       
-   } catch (error) { 
+   } catch (error) {  
        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
     
@@ -103,7 +104,7 @@ exports.updateProduct=async(req,res)=>{
 exports.deleteProductById=async(req,res)=>{
    try {
 
-      const {id}=req.params
+      const {id}=req.params 
       if(!id){
         res.status(400).json({"message":"Product id is missing","success":false,"rs":400,"data":null})  
       }else{

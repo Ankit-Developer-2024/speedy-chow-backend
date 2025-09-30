@@ -9,7 +9,7 @@ const addressSchema = new mongoose.Schema({
   state: { type: String, required: true },
   zipCode: { type: String, required: true },
   country: { type: String, required: true },
-  isDefault: { type: Boolean, default: false } // Indicates if this is the default address
+  isDefault: { type: Boolean, default: false }  
 });
 
 

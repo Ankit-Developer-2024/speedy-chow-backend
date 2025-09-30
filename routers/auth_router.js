@@ -1,15 +1,18 @@
 const express = require('express')
 const app = express()
 const router = express.Router()
-const {signUp,login,resetPasswordRequest,resetPassword,refreshToken,verifyToken}  =require("../controllers/auth_controller")
+const {signUp,login,resetPasswordRequest,resetPassword,refreshToken,verifyToken, checkUser, signOut}  =require("../controllers/auth_controller")
 const authJwt = require('../middlewares/auth_jwt')
+const passport = require('../services/passportService')
 
 exports.router=
 router.post('/signUp',signUp) 
-      .post('/login',login) 
-      .post('/reset-password-request',resetPasswordRequest)
+      .post('/login',passport.authenticate('local',{ session: false}),login) 
+      .get('/check',passport.authenticate('jwt',{ session: false }),checkUser)
+      .post('/reset-password-request',resetPasswordRequest) 
       .patch('/reset-password',resetPassword)
-      .get('/refresh-token',authJwt,refreshToken)
-      .get('/verify',authJwt,verifyToken)
+      .get('/refresh-token',refreshToken)
+      .get('/verify',passport.authenticate('jwt',{ session: false }),verifyToken)
+      .get('/signOut',signOut)
       
       

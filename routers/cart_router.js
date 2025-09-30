@@ -4,8 +4,8 @@ const { addToCart,updateCart,fetchCartByUser,fetchCartByProductId,deleteCartItem
 const authJwt = require('../middlewares/auth_jwt')
 
 exports.router=router
-               .post('/',authJwt,addToCart)
-               .patch('/:id',authJwt,updateCart)
-               .get('/',authJwt,fetchCartByUser)
-               .get('/:id',authJwt,fetchCartByProductId)
-               .delete('/:id',authJwt,deleteCartItem)
+               .post('/',addToCart)
+               .patch('/:id',updateCart)
+               .get('/',fetchCartByUser)
+               .get('/:id',fetchCartByProductId)
+               .delete('/:id',deleteCartItem)

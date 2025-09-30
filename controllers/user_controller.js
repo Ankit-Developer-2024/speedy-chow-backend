@@ -4,7 +4,7 @@ const createJwtToken = require("../services/global_services");
 exports.fetchUser = async (req, res) => {
   try {
     let { id } = req.user;
-
+  
     let user = await User.findById(id);
      const {accessToken,refreshToken} =createJwtToken(req.user); 
     if (user) {
