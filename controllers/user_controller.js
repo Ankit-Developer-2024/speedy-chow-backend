@@ -93,7 +93,7 @@ exports.fetchAllUser = async(req,res) =>{
 }
 
 exports.updateUser = async (req, res) => {
-  try {
+  try { 
     let { id } = req.user;
     let { addresses } = req.body;
     if (addresses) {
@@ -108,6 +108,7 @@ exports.updateUser = async (req, res) => {
         name: user.name,
         email: user.email,
         dob: user.dob,
+        image:user.image,
         gender: user.gender,
         addresses: user.addresses,
         phone: user.phone,
@@ -122,12 +123,14 @@ exports.updateUser = async (req, res) => {
           refreshToken,
           data: userData,
         });
-    } else {
+    }
+    else { 
       let user = await User.findByIdAndUpdate( id,{ ...req.body },{ new: true });
       let userData = {
         name: user.name,
         email: user.email,
         dob: user.dob,
+        image:user.image,
         gender: user.gender,
         addresses: addresses,
         phone: user.phone,
@@ -145,12 +148,51 @@ exports.updateUser = async (req, res) => {
           data: userData,
         });
     }
-  } catch (error) {
+  } catch (error) { 
+    
     res
       .status(500)
       .json({ message: String(error), success: false, rs: 500, data: null });
   }
 };
+
+exports.updateUserImage=async(req,res)=>{
+  try {   
+    let input={}
+    if(!req.file){
+     res.status(400).json({"message":"Image not found!","success":false,"rs":400,"data":null})
+    }
+
+    input.image=req.file.buffer;
+    input.imageType=req.file.mimetype;    
+    let user= await User.findByIdAndUpdate(req.user.id,input,{new:true})
+     let userData = {
+        id:user.id,    
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        role: user.role,
+        joinedAt:user.createdAt,
+        status:user.status,
+      };
+       res
+        .status(200)
+        .json({
+          message: "Image upload successfully!",
+          success: true,
+          rs: 200, 
+          data: userData,
+        });
+
+  } catch (error) { 
+    console.log(error);
+    
+     res
+      .status(500)
+      .json({ message: String(error), success: false, rs: 500, data: null });
+  }
+}
+
 
 exports.updateUserRoleAndStatus=async(req,res)=>{
   try {

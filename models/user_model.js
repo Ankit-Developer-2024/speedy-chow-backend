@@ -34,6 +34,7 @@ const userSchema=new mongoose.Schema({
     phone:{type:Number}, 
     dob:{type:Date},
     image:{type:Buffer},
+    imageType:{type:String},
     addresses:[addressSchema],
     salt:Buffer,
     resetPasswordOtp:{type:String,default:""},

@@ -1,13 +1,15 @@
 const express = require('express')
 const router = express.Router()
-const {updateUser, fetchUser ,updateUserAddress, fetchAllUser, deleteUserById, updateUserRoleAndStatus, deleteMultipleUserById, searchUserByName} = require('../controllers/user_controller')
+const {updateUser, fetchUser ,updateUserAddress, fetchAllUser, deleteUserById, updateUserRoleAndStatus, deleteMultipleUserById, searchUserByName, updateUserImage} = require('../controllers/user_controller')
 const authJwt = require('../middlewares/auth_jwt')
+const upload = require('../config/multer_config')
 
 exports.router=
         router.get('/',fetchUser) 
         router.get('/all',fetchAllUser) 
         router.get('/search',searchUserByName)
         router.patch('/',updateUser) 
+        router.patch('/image',upload.single("image"),updateUserImage) 
         router.patch('/:id',updateUserRoleAndStatus) 
         router.patch('/addresses/:id',updateUserAddress)  
         router.delete('/:id',deleteUserById)   
