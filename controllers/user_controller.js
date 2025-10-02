@@ -1,5 +1,6 @@
 const { User } = require("../models/user_model");
 const createJwtToken = require("../services/global_services");
+const {uploadBufferToCloudinary,deleteImageFromCloudinary} = require('../config/cloudinary_config')
 
 exports.fetchUser = async (req, res) => {
   try {
@@ -158,13 +159,24 @@ exports.updateUser = async (req, res) => {
 
 exports.updateUserImage=async(req,res)=>{
   try {   
-    let input={}
+    
     if(!req.file){
      res.status(400).json({"message":"Image not found!","success":false,"rs":400,"data":null})
     }
 
-    input.image=req.file.buffer;
-    input.imageType=req.file.mimetype;    
+    let userInfo=await User.findById(req.user.id);
+    if(!userInfo){
+    res.status(400).json({"message":"User not found!","success":false,"rs":400,"data":null})
+    }
+    let input={}
+    const uploadResponse = await uploadBufferToCloudinary(req.file.buffer, "Users"); 
+      if(uploadResponse){
+        input.image = uploadResponse.secure_url;
+        input.imagePublicId=uploadResponse.public_id
+        if(userInfo.imagePublicId){ 
+           await deleteImageFromCloudinary(userInfo.imagePublicId) 
+        }
+      }
     let user= await User.findByIdAndUpdate(req.user.id,input,{new:true})
      let userData = {
         id:user.id,    
@@ -184,15 +196,12 @@ exports.updateUserImage=async(req,res)=>{
           data: userData,
         });
 
-  } catch (error) { 
-    console.log(error);
-    
+  } catch (error) {  
      res
       .status(500)
       .json({ message: String(error), success: false, rs: 500, data: null });
   }
 }
-
 
 exports.updateUserRoleAndStatus=async(req,res)=>{
   try {
@@ -277,13 +286,20 @@ exports.updateUserAddress = async (req, res) => {
   }
 };
 
-
 exports.deleteUserById=async(req,res)=>{
    try {
      let { id } = req.params;  
+  
        let response = await User.findByIdAndDelete(id);
+       if(response){
+       const imgPublicId = response.imagePublicId
+        if(imgPublicId){ 
+           await deleteImageFromCloudinary(imgPublicId) 
+        }
        res.status(200).json({"message":"User deleted successfully","success":true,"rs":200,"data":response})
-       
+      }else{
+        res.status(400).json({"message":"User not found","success":false,"rs":400,"data":null})
+      }
    } catch (error) {
        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
@@ -296,13 +312,20 @@ exports.deleteMultipleUserById=async(req,res)=>{
       if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
           return res.status(400).json({ message: 'No user IDs provided for deletion.',"success":false,"rs":400,"data":null });
          }
-       const users = await User.find({_id:{$in:[...userIds]}});  
+
+         
+       const deletedUsers = await User.find({_id:{$in:[...userIds]}});  
        let response = await User.deleteMany({_id:{$in:[...userIds]}}); 
        if (response.deletedCount === 0) {
          return res.status(404).json({ message: 'No users found with the provided IDs.',"success":false,"rs":404,"data":null });
         } 
-    
-        let  deletedUsers={users}
+       
+       for(let user of deletedUsers){ 
+         const imgPublicId = user.imagePublicId
+         if(imgPublicId){ 
+           await deleteImageFromCloudinary(imgPublicId) 
+        }
+       } 
        res.status(200).json({"message":`${response.deletedCount} users deleted successfully`,"success":true,"rs":200,"data":deletedUsers})
        
    } catch (error) { 
@@ -310,7 +333,6 @@ exports.deleteMultipleUserById=async(req,res)=>{
    }
     
 }
-
 
 
 exports.searchUserByName=async (req, res) => {
