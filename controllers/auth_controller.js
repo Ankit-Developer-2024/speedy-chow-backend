@@ -2,7 +2,7 @@ const { User } = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const {createJwtToken} = require("../services/global_services");
+const {createJwtToken, sendOtpMail} = require("../services/global_services");
 const { sanitizeUser } = require("../services/common");
 
 exports.signUp = async (req, res) => {
@@ -23,7 +23,7 @@ exports.signUp = async (req, res) => {
       res
         .status(400)
         .json({
-          message: "Enter a vaild Email",
+          message: "Enter a vaild Email!",
           success: false,
           rs: 400,
           data: null,
@@ -34,7 +34,7 @@ exports.signUp = async (req, res) => {
       res
         .status(400)
         .json({
-          message: "Enter a vaild Passsword",
+          message: "Enter a vaild Passsword!",
           success: false,
           rs: 400,
           data: null,
@@ -148,6 +148,10 @@ exports.resetPasswordRequest = async (req, res) => {
     const user = await User.findOne({email});
     if (user) {
       //send email of otp and save 4 digiet otp to db
+       const otp=Math.floor(Math.random() * 10000)
+       const time=Date.now()+(10*60*1000);
+       await User.findByIdAndUpdate(user.id,{resetPasswordOtp:otp,otpValidUntil:time})
+       sendOtpMail(user.email,otp,time)
        res
         .status(200)
         .json({
@@ -161,7 +165,7 @@ exports.resetPasswordRequest = async (req, res) => {
         .status(404)
         .json({
           message: "User not found!",
-          success: true,
+          success: false,
           rs: 404,
           data: {success:false},
         });
@@ -178,7 +182,8 @@ exports.verifyOtp= async(req,res)=>{
     let { email, otp } = req.body;
     let user = await User.findOne({ email, resetPasswordOtp: otp });
     if (user) { 
-      if(user.resetPasswordOtp===otp){
+      let time= Date.now()
+      if(user.resetPasswordOtp===otp && time<=user.otpValidUntil){
         res
         .status(200)
         .json({
@@ -191,8 +196,8 @@ exports.verifyOtp= async(req,res)=>{
          res
         .status(200)
         .json({
-          message: "Otp not verified!",
-          success: true,
+          message: "Wrong Otp!",
+          success: false,
           rs: 200,
           data: {verify:false},
         });
@@ -202,8 +207,8 @@ exports.verifyOtp= async(req,res)=>{
        res
         .status(200)
         .json({
-          message: "Otp not verified!",
-          success: true,
+          message: "Wrong Otp!",
+          success: false,
           rs: 200,
           data: {verify:false},
         });
@@ -228,7 +233,7 @@ exports.resetPassword = async (req, res) => {
       res
         .status(200)
         .json({
-          message: "Password changed sucessfully",
+          message: "Password changed sucessfully!",
           success: true,
           rs: 200,
           data: {success:true},
@@ -237,7 +242,7 @@ exports.resetPassword = async (req, res) => {
       res
         .status(200)
         .json({
-          message: "Password not change sucessfully",
+          message: "Password not changed sucessfully!",
           success: true,
           rs: 200,
           data: {success:false},

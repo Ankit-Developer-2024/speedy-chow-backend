@@ -35,9 +35,9 @@ const userSchema=new mongoose.Schema({
     dob:{type:Date},
     image:{type:String},
     imagePublicId:{type:String},
-    addresses:[addressSchema],
-    salt:Buffer,
+    addresses:[addressSchema], 
     resetPasswordOtp:{type:String,default:""},
+    otpValidUntil:{type:Number,default:0},
     role:{type:String ,required : true,default:'user'},
     status:{type:String ,required : true,default:'Active'}
 

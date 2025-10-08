@@ -71,6 +71,33 @@ function validatePaymentVerification(orderId,paymentId,paymentSignature ) {
   }
 }
 
+ async function sendOtpMail(email,otp,time){
+  try {
+    let templateParams; 
+    templateParams= {
+        'email':email,
+        'info_subject': "Your OTP for Password Reset – Valid for 10 Minutes.",
+        'heading': 'To authenticate, please use the following One Time Password (OTP):',
+        'code':otp,
+        "info1":`This OTP will be valid for 10 minutes till ${(new Date(time)).toDateString() + " , " + (new Date(time)).toTimeString()}`,
+        "info2":"Do not share this OTP with anyone. If you didn't make this request, you can safely ignore this email. Speedy Chow will never contact you about this email or ask for any login codes or links. Beware of phishing scams."
+    };
+     
+   emailjs .send(process.env.EMAIL_SERVICE_ID, process.env.EMAIL_TEMPLATE_ID, templateParams)
+     .then(
+    (response) => { 
+      // console.log('SUCCESS!', response.status, response.text);
+    },
+    (err) => {
+     // console.log('FAILED...', err);
+    },
+  );
+  } catch (error) {
+   // console.log(error);
+    
+  }
+}
 
 
-module.exports={createJwtToken,validatePaymentVerification,sendOrderConfirmationMail}
+
+module.exports={createJwtToken,validatePaymentVerification,sendOrderConfirmationMail,sendOtpMail}
