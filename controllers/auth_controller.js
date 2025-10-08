@@ -2,7 +2,7 @@ const { User } = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const createJwtToken = require("../services/global_services");
+const {createJwtToken} = require("../services/global_services");
 const { sanitizeUser } = require("../services/common");
 
 exports.signUp = async (req, res) => {
@@ -145,17 +145,25 @@ exports.login = async (req, res) => {
 exports.resetPasswordRequest = async (req, res) => {
   try {
     let { email } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({email});
     if (user) {
-      //send email with otp
+      //send email of otp and save 4 digiet otp to db
+       res
+        .status(200)
+        .json({
+          message: "User found!",
+          success: true,
+          rs: 200,
+          data: {success:true},
+        });
     } else {
       res
-        .status(400)
+        .status(404)
         .json({
-          message: "User not found",
-          success: false,
-          rs: 400,
-          data: null,
+          message: "User not found!",
+          success: true,
+          rs: 404,
+          data: {success:false},
         });
     }
   } catch (error) {
@@ -165,11 +173,53 @@ exports.resetPasswordRequest = async (req, res) => {
   }
 };
 
+exports.verifyOtp= async(req,res)=>{
+    try {
+    let { email, otp } = req.body;
+    let user = await User.findOne({ email, resetPasswordOtp: otp });
+    if (user) { 
+      if(user.resetPasswordOtp===otp){
+        res
+        .status(200)
+        .json({
+          message: "Otp verified!",
+          success: true,
+          rs: 200,
+          data: {verify:true},
+        });
+      }else{
+         res
+        .status(200)
+        .json({
+          message: "Otp not verified!",
+          success: true,
+          rs: 200,
+          data: {verify:false},
+        });
+      }
+     
+    } else {
+       res
+        .status(200)
+        .json({
+          message: "Otp not verified!",
+          success: true,
+          rs: 200,
+          data: {verify:false},
+        });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: String(error), success: false, rs: 500, data: null });
+  }
+}
+
 exports.resetPassword = async (req, res) => {
   try {
-    let { email, password, otp } = req.body;
+    let { email, password } = req.body;
 
-    let user = await User.findOne({ email, resetPasswordOtp: otp });
+    let user = await User.findOne({ email});
     if (user) {
       user.password = password;
       user = await user.save();
@@ -178,19 +228,19 @@ exports.resetPassword = async (req, res) => {
       res
         .status(200)
         .json({
-          message: "Password change sucessfully",
+          message: "Password changed sucessfully",
           success: true,
           rs: 200,
-          data: null,
+          data: {success:true},
         });
     } else {
       res
-        .status(400)
+        .status(200)
         .json({
-          message: "User not found",
-          success: false,
-          rs: 400,
-          data: null,
+          message: "Password not change sucessfully",
+          success: true,
+          rs: 200,
+          data: {success:false},
         });
     }
   } catch (error) {

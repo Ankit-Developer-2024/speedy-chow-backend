@@ -1,5 +1,5 @@
 const { Cart } = require("../models/cart_model");
-const createJwtToken = require("../services/global_services");
+const {createJwtToken} = require("../services/global_services");
 require('../models/product_model'); 
 
 exports.fetchCartByUser=async(req,res)=>{

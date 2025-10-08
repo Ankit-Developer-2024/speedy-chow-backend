@@ -3,19 +3,20 @@ const {addressSchema} = require('../models/user_model')
 
 const paymentMethods={
     type:String,
-    values:['COD','UPI'],
+    values:['COD','Razorpay'],
     message:"Payment method must be cod OR card"
 }
 
 const orderSchema = new mongoose.Schema({
-    items:{type:[mongoose.Schema.Types.Mixed],require:true},
+    items:{type:[mongoose.Schema.Types.Mixed]},//require
     totalAmount:{type:Number,require:true},
-    totalItems:{type:Number,require:true},
+    totalItems:{type:Number},
     user:{type:mongoose.Schema.Types.ObjectId,ref:'User',require:true},
-    paymentMethod:{type:String,required :true,enum:paymentMethods},
-    status:{type:String,default:'Order Confirmed'},
+    paymentMethod:{type:String,required :true,enum:paymentMethods,require:true},
+    paymentStatus:{type:String, default:"pending"},
+    status:{type:String,default:'pending'},//Order Confirmed
     statusReason:{type:String},
-    selectedAddress:{type:addressSchema,require:true},
+    selectedAddress:{type:addressSchema},//require:true
 },{timestamps:true})
 
 

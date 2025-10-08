@@ -1,5 +1,5 @@
 const { User } = require("../models/user_model");
-const createJwtToken = require("../services/global_services");
+const {createJwtToken} = require("../services/global_services");
 const {uploadBufferToCloudinary,deleteImageFromCloudinary} = require('../config/cloudinary_config')
 
 exports.fetchUser = async (req, res) => {

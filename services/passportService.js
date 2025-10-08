@@ -6,7 +6,7 @@ const ExtractJwt = require("passport-jwt").ExtractJwt;
 const {User} = require("../models/user_model");
 const bcrypt = require("bcryptjs");
 const { cookieHearderExtractor, sanitizeUser } = require("./common");
-const createJwtToken = require("./global_services"); 
+const {createJwtToken} = require("./global_services"); 
 
 
 let opts = {};

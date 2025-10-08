@@ -1,5 +1,5 @@
 const { Product } = require("../models/product_model");
-const createJwtToken = require("../services/global_services");
+const {createJwtToken} = require("../services/global_services");
 const { login } = require("./auth_controller");
 const { uploadBufferToCloudinary , deleteImageFromCloudinary } = require("../config/cloudinary_config");
 
