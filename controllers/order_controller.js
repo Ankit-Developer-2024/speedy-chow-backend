@@ -57,7 +57,7 @@ exports.razorpaySaveVerifyApi=async(req,res)=>{
        
           if(isVerify){
             await Razorpay.findByIdAndUpdate(razorpayResp[0].id,{status:"success"})
-           await Order.findByIdAndUpdate(razorpayResp[0].order_id_db,{paymentStatus:"success"})
+            await Order.findByIdAndUpdate(razorpayResp[0].order_id_db,{paymentStatus:"success",status:"Order Confirmed"})
            return  res.status(200).json({"message":"Razorpay payment success!","success":true,"rs":200,"data":{"verify":isVerify}});
           }else{
             await Razorpay.findByIdAndUpdate(razorpayResp[0].id,{status:"failed"})
@@ -83,8 +83,7 @@ exports.createOrder=async(req,res)=>{
         if(req.body.paymentId.length!==0 && req.body.paymentMethod==='Razorpay'){
           const razorpayResp= await Razorpay.find({user: req.user.id,razorpay_payment_id:req.body.paymentId}); 
           if(razorpayResp){
-          
-            console.log("order id fro razoedy db",razorpayResp[0].order_id_db);
+           
             const isOrder = await Order.findById(razorpayResp[0].order_id_db)
             if(isOrder){
                 let outOfStock=""
@@ -179,7 +178,7 @@ exports.createOrder=async(req,res)=>{
 exports.fetchAllUserOrder=async(req,res)=>{
    try {
       
-      let orders=await Order.find({'user':req.user.id});
+      let orders=await Order.find({'user':req.user.id ,items:{ $not: { $size: 0 } } });
       const {accessToken,refreshToken} =createJwtToken(req.user);    
       res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"accessToken":accessToken,"refreshToken":refreshToken,"data":orders})
       
@@ -208,7 +207,7 @@ exports.fetchAllOrder=async(req,res)=>{
       let {id , paymentMethod,status}=req.query
       
       if(id){
-        let orders =await Order.find({_id:id})
+        let orders =await Order.find({_id:id,items:{ $not: { $size: 0 } }})
         return res.status(200).json({"message":"Orders fetch successfully","success":true,"rs":200,"data":orders})
       }
 
@@ -225,8 +224,7 @@ exports.fetchAllOrder=async(req,res)=>{
          
       res.status(200).json({"message":"Order fetch successfully","success":true,"rs":200,"data":orders})
       
-   } catch (error) { 
-      console.log(error);
+   } catch (error) {  
        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
     
