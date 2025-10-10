@@ -89,6 +89,58 @@ exports.signUp = async (req, res) => {
 
 exports.login = async (req, res) => {
   try { 
+  
+    const sanUser = sanitizeUser(req.user);
+    res
+      .status(200)
+      .json({
+        message: "Login successfully!",
+        success: true,
+        rs: 200,
+        accessToken: req.user.accessToken,
+        refreshToken: req.user.refreshToken,
+        data: { ...sanUser },
+      });
+
+    /*************login code without passport*************/
+    // if(!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)){
+    //    res.status(200).json({"message":"Enter a vaild Email","success":false,"rs":400,"data":null})
+    // }else{
+    //    const user =  await User.findOne({email});
+    //    if(user){
+    //      let response = await bcrypt.compare(password, user.password);
+    //      if (response) {
+    //           const {accessToken,refreshToken} =createJwtToken(user);
+    //           const userInfo=sanitizeUser(user);
+    //         res.status(200).json({"message":"User find successfully","success":true,"rs":200,accessToken,refreshToken,"data":{...userInfo}})
+    //      }else{
+    //         res.status(400).json({"message":"Enter wrong credentials","success":false,"rs":400,"data":null})
+    //      }
+    //    }else{
+    //      res.status(200).json({"message":"Enter wrong credentials","success":false,"rs":400,"data":null})
+    //    }
+    // }
+  } catch (error) {
+    console.log(error);
+    
+    res
+      .status(500)
+      .json({ message: String(error), success: false, rs: 500, data: null });
+  }
+};
+
+exports.webLogin = async (req, res) => {
+  try { 
+    if(req.user.role!=='admin'){
+       return  res
+      .status(400)
+      .json({
+        message: "You are not admin user!",
+        success: false,
+        rs: 400, 
+        data: null,
+      });
+    }
     
     res.cookie("accessToken", req.user.accessToken, {
       maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
@@ -133,9 +185,7 @@ exports.login = async (req, res) => {
     //      res.status(200).json({"message":"Enter wrong credentials","success":false,"rs":400,"data":null})
     //    }
     // }
-  } catch (error) {
-    console.log(error);
-    
+  } catch (error) { 
     res
       .status(500)
       .json({ message: String(error), success: false, rs: 500, data: null });

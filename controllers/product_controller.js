@@ -231,6 +231,7 @@ exports.searchProductByName = async (req, res) => {
          {
             $project: {
                _id: 1,
+               image:1,
                name: 1,
                discountedPrice: 1,
             },

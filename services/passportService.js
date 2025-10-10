@@ -23,6 +23,9 @@ passport.use(
       if (!user) {
         return cb(null, false, { message: "Wrong credentials!" });
       }
+      if(user.status==="Block" || user.status==="Delete" ){
+        return cb(null, false, { message: "User not found!" });
+      }
 
       let isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) { 
