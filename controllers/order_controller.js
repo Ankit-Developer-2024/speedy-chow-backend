@@ -211,7 +211,7 @@ exports.fetchAllOrder=async(req,res)=>{
         return res.status(200).json({"message":"Orders fetch successfully","success":true,"rs":200,"data":orders})
       }
 
-      let condition={}
+      let condition={items:{ $not: { $size: 0 } }}
       if(paymentMethod){
          condition.paymentMethod={$in:paymentMethod}
       }
@@ -266,20 +266,19 @@ exports.deleteOrderById=async(req,res)=>{
 
 exports.deleteMultipleOrderByIds=async(req,res)=>{
    try { 
-     let { orderIds } = req.body;   
+     let { orderIds } = req.body;    
       if (!orderIds || !Array.isArray(orderIds) || orderIds.length === 0) {
           return res.status(400).json({ message: 'No order IDs provided for deletion.',"success":false,"rs":400,"data":null });
          }
        const orders = await Order.find({_id:{$in:[...orderIds]}});  
-       let response = await Order.deleteMany({_id:{$in:[...orderIds]}}); 
+       
+       let response = await Order.deleteMany({_id:{$in:[...orderIds]}});  
        if (response.deletedCount === 0) {
          return res.status(404).json({ message: 'No orders found with the provided IDs.',"success":false,"rs":404,"data":null });
-        } 
-    
-        let  deletedOrders={orders}
+        }  
        res.status(200).json({"message":`${response.deletedCount} orders deleted successfully`,"success":true,"rs":200,"data":deletedOrders})
        
-   } catch (error) { 
+   } catch (error) {  
        res.status(500).json({"message":String(error),"success":false,"rs":500,"data":null})
    }
     

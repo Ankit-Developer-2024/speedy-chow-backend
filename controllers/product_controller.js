@@ -52,15 +52,14 @@ exports.fetchAllProduct = async (req, res) => {
       let condition = {};
       if (!req.query.admin) {
          condition.deleted = { $ne: true };
-      }
-
+      } 
+      
       let query = Product.find(condition);
       if (req.query.category || req.query["category[]"]) {
          if (req.query["category[]"]) {
             query = query.find({ category: { $in: req.query["category[]"] } });
          } else {
-            let category = req.query.category.split(",");
-            query = query.find({ category: { $in: category } });
+            query = query.find({ category: { $in: req.query.category } });
          }
       }
       if (req.query.qName) {

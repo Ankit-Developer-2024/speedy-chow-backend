@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const {createCategory,fetchAllCategory} = require('../controllers/category_controller')
-const authJwt = require('../middlewares/auth_jwt')
-const passport = require('../services/passportService')
+const {createCategory,fetchAllCategory, deleteCategory} = require('../controllers/category_controller') 
+const upload= require('../config/multer_config') 
 
 exports.router=
-      router.post('/',createCategory)
+      router.post('/',upload.single("image"),createCategory)
             .get('/',fetchAllCategory)
+            .delete('/:id',deleteCategory)
