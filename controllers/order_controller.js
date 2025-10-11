@@ -1,7 +1,7 @@
 const { Cart } = require("../models/cart_model");
 const { Order } = require("../models/order_model")
 const { Product } = require("../models/product_model");
-const {Razorpay} = require("../models/razorpay_model")
+const {RazorpayModel} = require("../models/razorpay_model")
 const {createJwtToken,validatePaymentVerification,sendOrderConfirmationMail} = require("../services/global_services");
 const razorpayInstance = require('../config/razorpay_config');
 const e = require("express");
@@ -23,7 +23,7 @@ exports.razorpayCreateOrderApi=async(req,res)=>{
        const response = await razorpayInstance.orders.create(options) 
 
        if(response['id']){ 
-         const razorpayRes= Razorpay({user:req.user.id,razorpay_order_id:response.id,order_id_db:orderDB.id})
+         const razorpayRes= RazorpayModel({user:req.user.id,razorpay_order_id:response.id,order_id_db:orderDB.id})
          await razorpayRes.save() 
        }else{
          return  res.status(400).json({"message":"Razorpay payment/order api data not found!","success":false,"rs":400,"data":null});
@@ -44,23 +44,23 @@ exports.razorpaySaveVerifyApi=async(req,res)=>{
          return res.status(400).json({"message":"Razorpay payment data not found!","success":false,"rs":400,"data":null});
        }
       
-       let razorpayResp= await Razorpay.find({user: req.user.id,razorpay_order_id:orderId});
+       let razorpayResp= await RazorpayModel.find({user: req.user.id,razorpay_order_id:orderId});
        if(!razorpayResp){
           return res.status(404).json({"message":"Razorpay payment data not found!","success":false,"rs":404,"data":null});
        } 
 
        //save and verify signature 
-       const razorpay=await Razorpay.findByIdAndUpdate(razorpayResp[0].id,{razorpay_payment_id:paymentId,razorpay_signature:paymentSignature})
+       const razorpay=await RazorpayModel.findByIdAndUpdate(razorpayResp[0].id,{razorpay_payment_id:paymentId,razorpay_signature:paymentSignature})
         
        if(razorpay){
           const isVerify= validatePaymentVerification(orderId,paymentId,paymentSignature)
        
           if(isVerify){
-            await Razorpay.findByIdAndUpdate(razorpayResp[0].id,{status:"success"})
+            await RazorpayModel.findByIdAndUpdate(razorpayResp[0].id,{status:"success"})
             await Order.findByIdAndUpdate(razorpayResp[0].order_id_db,{paymentStatus:"success",status:"Order Confirmed"})
            return  res.status(200).json({"message":"Razorpay payment success!","success":true,"rs":200,"data":{"verify":isVerify}});
           }else{
-            await Razorpay.findByIdAndUpdate(razorpayResp[0].id,{status:"failed"})
+            await RazorpayModel.findByIdAndUpdate(razorpayResp[0].id,{status:"failed"})
            await Order.findByIdAndUpdate(razorpayResp[0].order_id_db,{paymentStatus:"failed"})
            return  res.status(200).json({"message":"Razorpay payment success!","success":true,"rs":200,"data":{"verify":isVerify}});
          

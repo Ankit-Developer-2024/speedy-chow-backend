@@ -25,6 +25,6 @@ razorpaySchema.set('toJSON',{
     }
 })
 
-const Razorpay=mongoose.model('Razorpay',razorpaySchema)
+const RazorpayModel=mongoose.model('Razorpay',razorpaySchema)
 
-exports.Razorpay=Razorpay 
+exports.RazorpayModel=RazorpayModel 
