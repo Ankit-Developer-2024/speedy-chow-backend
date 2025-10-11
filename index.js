@@ -32,5 +32,7 @@ app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.rou
 
 
 app.listen(process.env.PORT,(req,res)=>{
-   // console.log("App run on",process.env.PORT)
+    console.log("App run on",process.env.PORT)
 })  
+
+module.exports=app;
