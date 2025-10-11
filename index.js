@@ -30,7 +30,7 @@ app.use('/category', passport.authenticate('jwt',{ session: false }),categoryRou
 app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.router)
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
 
-
-app.listen(process.env.PORT,(req,res)=>{
-   // console.log("App run on",process.env.PORT)
+const port=process.env.PORT || 3000
+app.listen(port,(req,res)=>{
+    console.log("App run on",port)
 })  
