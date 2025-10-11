@@ -1,8 +1,9 @@
 const express = require("express") 
-const app=express() 
-const db=require('./config/db')  
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+
+const db=require('./config/db')  
+
 const userRouter=require('./routers/user_router')
 const authRouter=require('./routers/auth_router')
 const productRouter =  require('./routers/product_router')
@@ -12,6 +13,8 @@ const orderRouter =  require('./routers/order_router')
 const passport = require('./services/passportService');   
 //const port = 3000;
 const serverless = require("serverless-http");
+
+const app=express() 
 
 const corsOptions = {
   origin: 'http://localhost:5173', // Allow only your frontend's origin
