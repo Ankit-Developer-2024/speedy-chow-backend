@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-const db=require('./config/db')  
+const dbConnect = require("./config/db");
 
 const userRouter=require('./routers/user_router')
 const authRouter=require('./routers/auth_router')
@@ -27,10 +27,11 @@ app.use(express.json({ limit: "50mb" }))
 app.use(cookieParser())
 app.use(passport.initialize());
 
-app.use(async (req, res, next) => {
-  await db();
-  next();
-});
+// app.use(async (req, res, next) => {
+//   console.log("seew");
+//   await dbConnect()
+//   next();
+// });
 
 app.use('/auth',authRouter.router)
 app.use('/user', passport.authenticate('jwt',{ session: false }),userRouter.router)
@@ -39,9 +40,10 @@ app.use('/category', passport.authenticate('jwt',{ session: false }),categoryRou
 app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.router)
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
 
-
+app.get("/", (req, res) => res.json({success:true}));
 // app.listen(port,()=>{
 //     console.log("App run on",port)
 // })  
+
 
 module.exports = serverless(app);
