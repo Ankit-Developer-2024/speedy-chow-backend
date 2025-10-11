@@ -1,8 +1,9 @@
 const express = require("express") 
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+require('dotenv').config()
 
-const dbConnect = require("./config/db"); 
+const db = require("./config/db");
 
 const userRouter=require('./routers/user_router')
 const authRouter=require('./routers/auth_router')
@@ -10,9 +11,7 @@ const productRouter =  require('./routers/product_router')
 const categoryRouter =  require('./routers/category_router')
 const cartRouter =  require('./routers/cart_router')
 const orderRouter =  require('./routers/order_router')
-const passport = require('./services/passportService');   
-const port = 3000;
-const serverless = require("serverless-http");
+const passport = require('./services/passportService');    
 
 const app=express() 
 
@@ -34,13 +33,10 @@ app.use('/category', passport.authenticate('jwt',{ session: false }),categoryRou
 app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.router)
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
 
+let port = process.env.PORT || 3000
+app.listen(port,()=>{
+    console.log("App run on",port)
+})  
 
-// app.listen(port,()=>{
-//     console.log("App run on",port)
-// })  
 
-
-module.exports = async (req, res) => {
-  await dbConnect()
-  return app(req, res);
-};
+// module.exports = app;
