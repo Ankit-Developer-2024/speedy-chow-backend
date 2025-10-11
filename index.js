@@ -10,7 +10,8 @@ const categoryRouter =  require('./routers/category_router')
 const cartRouter =  require('./routers/cart_router')
 const orderRouter =  require('./routers/order_router')
 const passport = require('./services/passportService');   
-const port = 3000;
+//const port = 3000;
+const serverless = require("serverless-http");
 
 const corsOptions = {
   origin: 'http://localhost:5173', // Allow only your frontend's origin
@@ -31,8 +32,8 @@ app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.rout
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
 
 
-app.listen(port,()=>{
-    console.log("App run on",port)
-})  
+// app.listen(port,()=>{
+//     console.log("App run on",port)
+// })  
 
-module.exports=app;
+module.exports = serverless(app);
