@@ -7,12 +7,9 @@ const {
     fetchAllOrder,
     updateOrder,
     deleteOrderById,
-    deleteMultipleOrderByIds,
-    searchOrderByUserAndOrderId,
+    deleteMultipleOrderByIds, 
     razorpayCreateOrderApi, 
-    razorpaySaveVerifyApi} = require('../controllers/order_controller')
-const authJwt = require('../middlewares/auth_jwt')
-const upload = require('../config/multer_config')
+    razorpaySaveVerifyApi} = require('../controllers/order_controller') 
 
 exports.router=router
                .get('/',fetchAllUserOrder) 
