@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 require('dotenv').config()
 let isConnected = false;
 
-main().catch(err => console.log("DB",err));
+// main().catch(err => console.log("DB",err));
 
-async function main() {    
+const connectDB =async function main() {    
     if(isConnected) return;
   await mongoose.connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
@@ -15,3 +15,5 @@ async function main() {
     console.log("mongodb connected");
   
 }
+
+module.exports = connectDB;

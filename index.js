@@ -27,6 +27,11 @@ app.use(express.json({ limit: "50mb" }))
 app.use(cookieParser())
 app.use(passport.initialize());
 
+app.use(async (req, res, next) => {
+  await db();
+  next();
+});
+
 app.use('/auth',authRouter.router)
 app.use('/user', passport.authenticate('jwt',{ session: false }),userRouter.router)
 app.use('/product',passport.authenticate('jwt',{ session: false }),productRouter.router)
