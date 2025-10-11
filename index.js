@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-const db = require("./config/db");
+const dbConnect = require("./config/db"); 
 
 const userRouter=require('./routers/user_router')
 const authRouter=require('./routers/auth_router')
@@ -35,9 +35,12 @@ app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.rout
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
 
 
-app.listen(port,()=>{
-    console.log("App run on",port)
-})  
+// app.listen(port,()=>{
+//     console.log("App run on",port)
+// })  
 
 
-module.exports = app;
+module.exports = async (req, res) => {
+  await dbConnect()
+  return app(req, res);
+};
