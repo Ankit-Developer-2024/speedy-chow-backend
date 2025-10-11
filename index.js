@@ -31,8 +31,8 @@ app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.rout
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
 
 
-app.listen(process.env.PORT,(req,res)=>{
-    console.log("App run on",process.env.PORT)
-})  
+// app.listen('/',(req,res)=>{
+//     console.log("App run on")
+// })  
 
 module.exports=app;
