@@ -3,8 +3,7 @@ const { Order } = require("../models/order_model")
 const { Product } = require("../models/product_model");
 const {RazorpayModel} = require("../models/razorpay_model")
 const {createJwtToken,validatePaymentVerification,sendOrderConfirmationMail} = require("../services/global_services");
-const razorpayInstance = require('../config/razorpay_config');
-const e = require("express");
+const razorpayInstance = require('../config/razorpay_config'); 
 
 exports.razorpayCreateOrderApi=async(req,res)=>{
      try { 
@@ -81,7 +80,7 @@ exports.createOrder=async(req,res)=>{
 
       //  let {user,totalAmount,totalItems,items,selectedAddress,paymentMethod}=req.body
         if(req.body.paymentId.length!==0 && req.body.paymentMethod==='Razorpay'){
-          const razorpayResp= await Razorpay.find({user: req.user.id,razorpay_payment_id:req.body.paymentId}); 
+          const razorpayResp= await RazorpayModel.find({user: req.user.id,razorpay_payment_id:req.body.paymentId}); 
           if(razorpayResp){
            
             const isOrder = await Order.findById(razorpayResp[0].order_id_db)
