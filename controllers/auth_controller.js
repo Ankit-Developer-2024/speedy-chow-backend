@@ -49,7 +49,8 @@ exports.signUp = async (req, res) => {
           maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
           httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
           secure: true, // Sends the cookie only over HTTPS
-          sameSite: "None", // IMPORTANT: allows cross-site cookie sharing
+          sameSite: "None", // IMPORTANT: allows cross-site cookie sharing,
+          path: '/',
         });
         const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
         res.cookie("refreshToken", refreshToken, {
@@ -57,6 +58,7 @@ exports.signUp = async (req, res) => {
           httpOnly: true,
           secure: true,
           sameSite: "None", 
+          path: '/',
         });
 
         res
@@ -146,7 +148,8 @@ exports.webLogin = async (req, res) => {
       maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
       httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
       secure: true, // Sends the cookie only over HTTPS
-      sameSite: "None", // Controls when the cookie is sent with cross-site requests
+      sameSite: "None",
+      path: '/',
     });
     const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("refreshToken", req.user.refreshToken, {
@@ -154,6 +157,7 @@ exports.webLogin = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      path: '/',
     });
     const sanUser = sanitizeUser(req.user);
     res
@@ -327,6 +331,7 @@ exports.refreshToken = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      path: '/',
     });
     const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("refreshToken", refreshToken, {
@@ -334,6 +339,7 @@ exports.refreshToken = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      path: '/',
     }); 
     res
       .status(200)
@@ -358,7 +364,8 @@ exports.verifyToken = async (req, res) => {
       maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
       httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
       secure: true, // Sends the cookie only over HTTPS
-      sameSite: "None", // Controls when the cookie is sent with cross-site requests
+      sameSite: "None",
+      path: '/',
     });
     const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("refreshToken", req.user.refreshToken, {
@@ -366,6 +373,7 @@ exports.verifyToken = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
+      path: '/',
     });
 
     res
