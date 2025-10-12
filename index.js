@@ -1,6 +1,7 @@
 const express = require("express") 
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path')
 require('dotenv').config()
 
 const db = require("./config/db");
@@ -24,7 +25,8 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" }))  
 app.use(cookieParser())
 app.use(passport.initialize());
- 
+
+app.use(express.static(path.join(__dirname, "dist"))); 
 
 app.use('/auth',authRouter.router)
 app.use('/user', passport.authenticate('jwt',{ session: false }),userRouter.router)
@@ -32,6 +34,10 @@ app.use('/product',passport.authenticate('jwt',{ session: false }),productRouter
 app.use('/category', passport.authenticate('jwt',{ session: false }),categoryRouter.router)
 app.use('/cart', passport.authenticate('jwt',{ session: false }),cartRouter.router)
 app.use('/order',passport.authenticate('jwt',{ session: false }),orderRouter.router)
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 let port = process.env.PORT || 3000
 app.listen(port,()=>{
