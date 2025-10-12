@@ -42,4 +42,7 @@ app.get("*", (req, res) => {
 let port = process.env.PORT || 3000
 app.listen(port,()=>{
     console.log("App run on",port)
-})   
+})  
+
+
+// module.exports = app;
