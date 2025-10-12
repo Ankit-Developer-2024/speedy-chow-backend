@@ -7,7 +7,6 @@ export const sanitizeUser = function sanitizeUser(user) {
 
 export const cookieHearderExtractor=(req,res)=>{ 
      
-    console.log('cookies:--', req.cookies);
        if(req.headers.authorization){ 
         return req.headers.authorization.split(" ")[1]
        }
