@@ -12,7 +12,7 @@ const orderRouter =  require('./routers/order_router')
 const passport = require('./services/passportService');   
 
 const corsOptions = {
-  origin: 'https://speedy-chow-admin.vercel.app/', // Allow only your frontend's origin
+  origin: 'https://speedy-chow-admin.vercel.app', // Allow only your frontend's origin
    credentials: true, 
 };
 
