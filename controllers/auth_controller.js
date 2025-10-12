@@ -49,14 +49,14 @@ exports.signUp = async (req, res) => {
           maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
           httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
           secure: true, // Sends the cookie only over HTTPS
-          sameSite: "Lax", // Controls when the cookie is sent with cross-site requests
+          sameSite: "None", // IMPORTANT: allows cross-site cookie sharing
         });
         const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
         res.cookie("refreshToken", refreshToken, {
           maxAge: maxAgeMilliseconds,
           httpOnly: true,
           secure: true,
-          sameSite: "Lax",
+          sameSite: "None", 
         });
 
         res
@@ -146,14 +146,14 @@ exports.webLogin = async (req, res) => {
       maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
       httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
       secure: true, // Sends the cookie only over HTTPS
-      sameSite: "Lax", // Controls when the cookie is sent with cross-site requests
+      sameSite: "None", // Controls when the cookie is sent with cross-site requests
     });
     const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("refreshToken", req.user.refreshToken, {
       maxAge: maxAgeMilliseconds,
       httpOnly: true,
       secure: true,
-      sameSite: "Lax",
+      sameSite: "None",
     });
     const sanUser = sanitizeUser(req.user);
     res
@@ -166,25 +166,7 @@ exports.webLogin = async (req, res) => {
         refreshToken: req.user.refreshToken,
         data: { ...sanUser },
       });
-
-    /*************login code without passport*************/
-    // if(!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g)){
-    //    res.status(200).json({"message":"Enter a vaild Email","success":false,"rs":400,"data":null})
-    // }else{
-    //    const user =  await User.findOne({email});
-    //    if(user){
-    //      let response = await bcrypt.compare(password, user.password);
-    //      if (response) {
-    //           const {accessToken,refreshToken} =createJwtToken(user);
-    //           const userInfo=sanitizeUser(user);
-    //         res.status(200).json({"message":"User find successfully","success":true,"rs":200,accessToken,refreshToken,"data":{...userInfo}})
-    //      }else{
-    //         res.status(400).json({"message":"Enter wrong credentials","success":false,"rs":400,"data":null})
-    //      }
-    //    }else{
-    //      res.status(200).json({"message":"Enter wrong credentials","success":false,"rs":400,"data":null})
-    //    }
-    // }
+ 
   } catch (error) { 
     res
       .status(500)
@@ -344,14 +326,14 @@ exports.refreshToken = async (req, res) => {
       maxAge: 3600000,
       httpOnly: true,
       secure: true,
-      sameSite: "Lax",
+      sameSite: "None",
     });
     const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("refreshToken", refreshToken, {
       maxAge: maxAgeMilliseconds,
       httpOnly: true,
       secure: true,
-      sameSite: "Lax",
+      sameSite: "None",
     }); 
     res
       .status(200)
@@ -376,14 +358,14 @@ exports.verifyToken = async (req, res) => {
       maxAge: 3600000, // Cookie expires in 1 hour (in milliseconds)
       httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
       secure: true, // Sends the cookie only over HTTPS
-      sameSite: "Lax", // Controls when the cookie is sent with cross-site requests
+      sameSite: "None", // Controls when the cookie is sent with cross-site requests
     });
     const maxAgeMilliseconds = 30 * 24 * 60 * 60 * 1000;
     res.cookie("refreshToken", req.user.refreshToken, {
       maxAge: maxAgeMilliseconds,
       httpOnly: true,
       secure: true,
-      sameSite: "Lax",
+      sameSite: "None",
     });
 
     res
