@@ -14,6 +14,16 @@ The project is powered by a **Node.js + Express + MongoDB** backend and features
 
 ---
 
+# ⚙️ Speedy Chow - Backend API
+
+This repository contains the **backend REST API** for **Speedy Chow**, built using **Node.js**, **Express.js**, and **MongoDB**.  
+It powers both the **Flutter app** and the **React admin panel**, providing endpoints for authentication, products, orders, users, and payment processing via **Razorpay**.
+
+🔗 **Related Projects**
+- [User App (Flutter)](https://github.com/Ankit-Developer-2024/speedy-chow-app)
+- [Admin Panel (React)](https://github.com/Ankit-Developer-2024/speedy-chow-admin)
+
+
 ## 🚀 Project Overview
 
 | Section | Description |
