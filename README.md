@@ -9,7 +9,7 @@ The project is powered by a **Node.js + Express + MongoDB** backend and features
 
 | Platform | Link |
 |-----------|------|
-| 📱 **Download & Try App (Android)** | [👉 Download Speedy Chow App](https://drive.google.com/file/d/1zpW_ZNJA7alY_j_PSk4K8V8rFhmoFd2s/view?usp=sharing) |
+| 📱 **Download & Try App (Android)** | [👉 Download Speedy Chow App](https://drive.google.com/file/d/1rn3FTeXv-OHLmj_zvubbJaDlulTk9kaE/view?usp=sharing) |
 | 🖥️ **Admin Panel (Live on Vercel)** | [👉 Visit Speedy Chow Admin Panel](https://speedy-chow-backend.vercel.app/) |
 
 ---
